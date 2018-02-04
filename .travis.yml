@@ -1,6 +1,6 @@
 os: linux
 language: csharp
-dotnet: 2.0.5
+dotnet: 2.1.4
 mono: none
 env:
   global:
