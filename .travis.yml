@@ -1,0 +1,10 @@
+os: linux
+language: csharp
+dotnet: 2.0.5
+mono: none
+env:
+  global:
+    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+    - DOTNET_CLI_TELEMETRY_OPTOUT: 1
+script:
+  - ./build.sh
