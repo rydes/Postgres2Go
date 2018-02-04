@@ -1,7 +1,7 @@
 os: linux
 language: csharp
 dotnet: 2.1.4
-mono: none
+mono: 5.8.0
 env:
   global:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
@@ -9,10 +9,5 @@ env:
 
 before_install:
   - chmod +x ./build.sh
-  # add mono cause Cake build system still doesn't support donet core; this should be not need anymore with 0.26 release of Cake
-  - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-  - echo "deb http://download.mono-project.com/repo/ubuntu xenial main" | sudo tee /etc/apt/sources.list.d/mono-official.list
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq mono-devel
 script:
   - ./build.sh
