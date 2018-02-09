@@ -1,0 +1,43 @@
+version: 1.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+  - develop
+environment:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+nuget:
+  project_feed: true
+  disable_publish_on_pr: true
+build_script:
+- ps: .\build.ps1
+test: off
+artifacts:
+- path: .\artifacts\*.nupkg
+  name: NuGet
+- path: .\test-results\*.xml
+  name: Xunit
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: Qx3fDYoXxPJ5WTYwSBZ+YOZNDczRzp3ArzKznSROrufvP4V0hMH3J+fkch1XJRcT
+  artifact: Xunit
+  draft: true
+  on:
+    branch: master
+- provider: NuGet
+  api_key:
+    secure: A6wQVLq8VuAcMsLseWiKAe8k7AUS8Fop9yT9fsnS7xp0sj/m928DLN/7ZuVIZK1k
+  skip_symbols: true
+  artifact: NuGet
+  on:
+    branch: master
+notifications:
+- provider: Email
+  to:
+  - zabrowarnyrafal@users.noreply.github.com
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
