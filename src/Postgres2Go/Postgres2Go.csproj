@@ -4,6 +4,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <Version>$(SemVer)</Version>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Helper\PostgresProcess.IDisposable.cs" />
