@@ -18,7 +18,6 @@ var testResultsDir      = Directory("./test-results/");
 GitVersion versionInfo  = null;
 
 
-
 // Tasks
 Task("Clean")
     .Does(() => {
