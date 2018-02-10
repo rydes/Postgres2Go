@@ -1,3 +1,6 @@
+// Addins
+#addin "nuget:?package=Cake.Incubator"
+
 // Tools
 #tool                   "xunit.runner.console"
 #tool "nuget:?package=GitVersion.CommandLine"
@@ -5,10 +8,9 @@
 // Parameters
 var configuration       = Argument("Configuration", "Release");
 var target              = Argument("Target", "Default");
+GitVersion versionInfo  = Argument<GitVersion>("Version", null);
 
 // Variables
-GitVersion versionInfo = null;
-
 var outputDir           = Directory("./artifacts");
 var projectDir          = GetFiles("./src/Postgres2Go/*.csproj").FirstOrDefault();
 var solution            = GetFiles("./src/*.sln").FirstOrDefault();
@@ -56,25 +58,19 @@ Task("Restore-NuGet-Packages")
 
 Task("Get-Version-Info")
     .Does(() => {
-        Information("Get version:");
+        Information("Set artifacts version");
         
-        versionInfo = GitVersion(
-            new GitVersionSettings {
-                UpdateAssemblyInfo = true,
-                OutputType = GitVersionOutput.Json
-            });
+        if(!HasArgument("Version")){
+            
+            Information("Read version inforation from GitVersion");
+            versionInfo = GitVersion(
+                new GitVersionSettings {
+                    UpdateAssemblyInfo = true,
+                    OutputType = GitVersionOutput.Json
+                });
+        }
         
-        Information("Version.FullSemVer = " + versionInfo.FullSemVer);
-        Information("Version.InformationalVersion = " + versionInfo.InformationalVersion);
-        Information("Version.LegacySemVer = " + versionInfo.LegacySemVer);
-        Information("Version.LegacySemVerPadded = " + versionInfo.LegacySemVerPadded);
-        Information("Version.MajorMinorPatch = " + versionInfo.MajorMinorPatch);
-        Information("Version.NuGetVersion = " + versionInfo.NuGetVersion);
-        Information("Version.NuGetVersionV2 = " + versionInfo.NuGetVersionV2);
-        Information("Version.PreReleaseLabel = " + versionInfo.PreReleaseLabel);
-        Information("Version.PreReleaseTag = " + versionInfo.PreReleaseTag);
-        Information("Version.PreReleaseTagWithDash = " + versionInfo.PreReleaseTagWithDash);
-        Information("Version.SemVer = " + versionInfo.SemVer);
+        Information("Version is: {0}", versionInfo.Dump());
     });
 
 Task("Build")
