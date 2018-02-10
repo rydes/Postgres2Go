@@ -1,14 +1,13 @@
 // Addins
-#addin "nuget:?package=Cake.Incubator"
+#addin                  "nuget:?package=Cake.Incubator"
 
 // Tools
 #tool                   "xunit.runner.console"
-#tool "nuget:?package=GitVersion.CommandLine"
+#tool                   "nuget:?package=GitVersion.CommandLine"
 
 // Parameters
 var configuration       = Argument("Configuration", "Release");
 var target              = Argument("Target", "Default");
-GitVersion versionInfo  = Argument<GitVersion>("Version", null);
 
 // Variables
 var outputDir           = Directory("./artifacts");
@@ -16,6 +15,7 @@ var projectDir          = GetFiles("./src/Postgres2Go/*.csproj").FirstOrDefault(
 var solution            = GetFiles("./src/*.sln").FirstOrDefault();
 var tests               = GetFiles("./src/Postgres2Go.Tests/*.csproj").FirstOrDefault();
 var testResultsDir      = Directory("./test-results/");
+GitVersion versionInfo  = null;
 
 
 // Tasks
@@ -60,15 +60,11 @@ Task("Get-Version-Info")
     .Does(() => {
         Information("Set artifacts version");
         
-        if(!HasArgument("Version")){
-            
-            Information("Read version inforation from GitVersion");
-            versionInfo = GitVersion(
+        versionInfo = GitVersion(
                 new GitVersionSettings {
                     UpdateAssemblyInfo = true,
                     OutputType = GitVersionOutput.Json
                 });
-        }
         
         Information("Version is: {0}", versionInfo.Dump());
     });
