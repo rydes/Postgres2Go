@@ -1,111 +1,56 @@
-version: '{build}' pull_requests: doversion: '{build}'
-
+version: '{build}'
 pull_requests:
-
   do_not_increment_build_number: true
-
 branches:
-
   only:
-
   - master
-
   - develop
-
 skip_tags: true
-
 environment:
-
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-
   VERSION_INFO_SEMVER: null
-
   VERSION_INFO: null
-
 install:
-
 - ps: >-
-
     $version_info = (gitversion /output json | ConvertFrom-Json)
-
-
 
     $env:VERSION_INFO = $version_info
 
-
-
     $env:VERSION_INFO_SEMVER = $version_info.SemVer
-
-
-
 
 
     Update-AppveyorBuild -Version "$env:VERSION_INFO_SEMVER-$env:APPVEYOR_BUILD_NUMBER"
 
 
-
-
-
     Write-Host "Set VERSION_INFO_SEMVER = " $env:VERSION_INFO_SEMVER
 
-
-
     Write-Host "Set APPVEYOR_BUILD_VERSION = " $env:APPVEYOR_BUILD_VERSION
-
 nuget:
-
   project_feed: true
-
   disable_publish_on_pr: true
-
 build_script:
-
 - ps: .\build.ps1
-
 test: off
-
 artifacts:
-
 - path: .\artifacts\*.nupkg
-
   name: NuGet
-
 - path: .\test-results\*.xml
-
   name: Xunit
-
 deploy:
-
 - provider: GitHub
-
   tag: ${VERSION_INFO_SEMVER}
-
   release: v${VERSION_INFO_SEMVER}
-
   auth_token:
-
     secure: Qx3fDYoXxPJ5WTYwSBZ+YOZNDczRzp3ArzKznSROrufvP4V0hMH3J+fkch1XJRcT
-
   artifact: Nuget
-
   draft: true
-
   on:
-
     branch: master
-
 notifications:
-
 - provider: Email
-
   to:
-
   - zabrowarnyrafal@users.noreply.github.com
-
   on_build_success: true
-
   on_build_failure: true
-
-  on_build_status_changed: false_not_increment_build_number: true branches: only: - master - develop skip_tags: true environment: DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true DOTNET_CLI_TELEMETRY_OPTOUT: true VERSION_INFO_SEMVER: null VERSION_INFO: null install: - ps: >- $version_info = (gitversion /output json | ConvertFrom-Json) $env:VERSION_INFO = $version_info $env:VERSION_INFO_SEMVER = $version_info.SemVer Update-AppveyorBuild -Version "$env:VERSION_INFO_SEMVER-$env:APPVEYOR_BUILD_NUMBER" Write-Host "Set VERSION_INFO_SEMVER = " $env:VERSION_INFO_SEMVER Write-Host "Set APPVEYOR_BUILD_VERSION = " $env:APPVEYOR_BUILD_VERSION nuget: project_feed: true disable_publish_on_pr: true build_script: - ps: .\build.ps1 test: off artifacts: - path: .\artifacts\*.nupkg name: NuGet - path: .\test-results\*.xml name: Xunit deploy: - provider: GitHub tag: ${VERSION_INFO_SEMVER} release: v${VERSION_INFO_SEMVER} auth_token: secure: Qx3fDYoXxPJ5WTYwSBZ+YOZNDczRzp3ArzKznSROrufvP4V0hMH3J+fkch1XJRcT artifact: Nuget draft: true on: branch: master notifications: - provider: Email to: - zabrowarnyrafal@users.noreply.github.com on_build_success: true on_build_failure: true on_build_status_changed: false
+  on_build_status_changed: false
